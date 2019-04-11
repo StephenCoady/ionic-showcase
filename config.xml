@@ -81,8 +81,9 @@
         <variable name="FCM_VERSION" value="11.6.2" />
     </plugin>
     <plugin name="cordova-plugin-local-notification" spec="0.9.0-beta.2" />
-    <plugin name="cordova-sqlite-storage" spec="3.1.0" />
     <plugin name="cordova-plugin-aerogear-metrics" spec="@aerogear/cordova-plugin-aerogear-metrics@~2.1.0-rc1" />
+    <plugin name="cordova-sqlite-storage" spec="https://github.com/litehelpers/Cordova-sqlite-storage.git" />
+    <plugin name="cordova-sqlcipher-adapter" spec="https://github.com/brodybits/cordova-sqlcipher-adapter" />
     <engine name="ios" spec="5.0.0" />
     <engine name="android" spec="8.0.0" />
 </widget>

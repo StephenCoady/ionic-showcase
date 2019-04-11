@@ -7,6 +7,9 @@ import { OpenShiftService } from '../openshift.service';
 import { AlertController } from '@ionic/angular';
 import { AuthService } from '../auth.service';
 import { taskCacheUpdates } from './cache.updates';
+import * as Localforage from '@ionic/storage/node_modules/localforage/dist/localforage';
+
+declare var window: any;
 
 /**
  * Class used to log data conflicts in server
@@ -71,10 +74,21 @@ export class VoyagerService {
       fileUpload: true,
       mutationCacheUpdates: mergedCacheUpdates
     };
+    Localforage.defineDriver(window.cordovaSQLiteDriver).then(() => {
+      return Localforage.setDriver([
+        window.cordovaSQLiteDriver._driver
+      ]);
+    });
+    Localforage.config();
+    const store = Localforage.createInstance({ name: 'mydb', storeName: 'mystorename', dbKey: 'offline'});
+
+    console.log(store);
+
     if (!this.openShift.hasSyncConfig()) {
       // Use default localhost urls when OpenShift config is missing
       options.httpUrl = 'http://localhost:4000/graphql';
       options.wsUrl = 'ws://localhost:4000/graphql';
+      options.storage = store;
     } else {
       options.openShiftConfig = this.openShift.getConfig();
     }
