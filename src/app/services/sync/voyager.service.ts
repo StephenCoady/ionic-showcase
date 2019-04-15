@@ -65,13 +65,28 @@ export class VoyagerService {
     };
     // Merget all cache updates functions (currently only single)
     const mergedCacheUpdates = taskCacheUpdates;
+    const generatedKey = await window.crypto.subtle.generateKey(
+      {
+        name: 'AES-GCM',
+        length: 256,
+      },
+      true,
+      ['encrypt', 'decrypt']
+    ).then(value => {
+      return value;
+      });
+      const encryptionPassword = 'supersecretsafepassword';
+      const exportedKey = await window.crypto.subtle.exportKey('jwk', generatedKey).then((value) => value);
+
     const options: DataSyncConfig = {
       offlineQueueListener: numberOfOperationsProvider,
       conflictListener: new ConflictLogger(this.alertCtrl),
       fileUpload: true,
       mutationCacheUpdates: mergedCacheUpdates,
-      encryptionKey: 'myreallylongkey'
+      encryptionKey: exportedKey,
+      encryptionPassword
     };
+
     if (!this.openShift.hasSyncConfig()) {
       // Use default localhost urls when OpenShift config is missing
       options.httpUrl = 'http://localhost:4000/graphql';
@@ -84,5 +99,9 @@ export class VoyagerService {
       options.authContextProvider = authService.getAuthContextProvider();
     }
     this._apolloClient = await createClient(options);
+  }
+
+  public strToArray(str: string) {
+    return new TextEncoder().encode(str);
   }
 }
