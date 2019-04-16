@@ -65,26 +65,13 @@ export class VoyagerService {
     };
     // Merget all cache updates functions (currently only single)
     const mergedCacheUpdates = taskCacheUpdates;
-    const generatedKey = await window.crypto.subtle.generateKey(
-      {
-        name: 'AES-GCM',
-        length: 256,
-      },
-      true,
-      ['encrypt', 'decrypt']
-    ).then(value => {
-      return value;
-      });
-      const encryptionPassword = 'supersecretsafepassword';
-      const exportedKey = await window.crypto.subtle.exportKey('jwk', generatedKey).then((value) => value);
 
     const options: DataSyncConfig = {
       offlineQueueListener: numberOfOperationsProvider,
       conflictListener: new ConflictLogger(this.alertCtrl),
       fileUpload: true,
       mutationCacheUpdates: mergedCacheUpdates,
-      encryptionKey: exportedKey,
-      encryptionPassword
+      encryptionPassword: 'mysupersecretpassword'
     };
 
     if (!this.openShift.hasSyncConfig()) {
